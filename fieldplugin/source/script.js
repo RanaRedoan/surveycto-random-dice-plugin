@@ -54,7 +54,8 @@ function randomFace() {
 }
 
 function setFace(face) {
-  diceEl.className = "dice-face face-" + String(face);
+  var keepRolling = rolling ? " rolling" : "";
+  diceEl.className = "dice-face face-" + String(face) + keepRolling;
 }
 
 function setResult(face) {
@@ -114,6 +115,11 @@ function startRoll() {
     previewTimer = null;
     var finalValue = randomFace();
     setFace(finalValue);
+    diceEl.classList.remove("rolling");
+    diceEl.classList.add("settle-flash");
+    setTimeout(function () {
+      diceEl.classList.remove("settle-flash");
+    }, 320);
     setResult(finalValue);
     setTimestampNow();
     setAnswer(String(finalValue));
