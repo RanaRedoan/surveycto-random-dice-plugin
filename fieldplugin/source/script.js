@@ -1,6 +1,10 @@
 /* global fieldProperties, setAnswer, getPluginParameter */
 
-var diceEl = document.getElementById("dice-touch-target");
+var diceTouch = document.getElementById("dice-touch-target");
+var cubeEl = document.getElementById("dice-cube");
+var frontFaceEl = document.querySelector(".cube-front");
+var rightFaceEl = document.querySelector(".cube-right");
+var topFaceEl = document.querySelector(".cube-top");
 var rollButton = document.getElementById("roll-button");
 var soundButton = document.getElementById("sound-button");
 var resultText = document.getElementById("result-text");
@@ -40,6 +44,24 @@ function getConfig() {
 var config = getConfig();
 soundEnabled = config.soundEnabled;
 
+var DOT_MAP = {
+  1: ["d-c"],
+  2: ["d-tl", "d-br"],
+  3: ["d-tl", "d-c", "d-br"],
+  4: ["d-tl", "d-tr", "d-bl", "d-br"],
+  5: ["d-tl", "d-tr", "d-c", "d-bl", "d-br"],
+  6: ["d-tl", "d-tr", "d-ml", "d-mr", "d-bl", "d-br"]
+};
+
+var ORIENTATION = {
+  1: "rotateX(-18deg) rotateY(20deg)",
+  2: "rotateX(-24deg) rotateY(112deg)",
+  3: "rotateX(-20deg) rotateY(200deg)",
+  4: "rotateX(-20deg) rotateY(292deg)",
+  5: "rotateX(68deg) rotateY(22deg)",
+  6: "rotateX(-92deg) rotateY(18deg)"
+};
+
 function updateSoundLabel() {
   soundButton.textContent = soundEnabled ? "Sound: On" : "Sound: Off";
 }
@@ -53,9 +75,30 @@ function randomFace() {
   return Math.floor(Math.random() * 6) + 1;
 }
 
+function renderDots(faceEl, value) {
+  faceEl.innerHTML = "";
+  var dots = DOT_MAP[value] || DOT_MAP[1];
+  for (var i = 0; i < dots.length; i += 1) {
+    var dot = document.createElement("span");
+    dot.className = "dot " + dots[i];
+    faceEl.appendChild(dot);
+  }
+}
+
+function uniqueFaces(seedFace) {
+  var top = randomFace();
+  var right = randomFace();
+  if (top === seedFace) top = (top % 6) + 1;
+  if (right === seedFace || right === top) right = ((right + 1) % 6) + 1;
+  return { front: seedFace, top: top, right: right };
+}
+
 function setFace(face) {
-  var keepRolling = rolling ? " rolling" : "";
-  diceEl.className = "dice-face face-" + String(face) + keepRolling;
+  var faces = uniqueFaces(face);
+  renderDots(frontFaceEl, faces.front);
+  renderDots(topFaceEl, faces.top);
+  renderDots(rightFaceEl, faces.right);
+  cubeEl.style.transform = ORIENTATION[face] || ORIENTATION[1];
 }
 
 function setResult(face) {
@@ -67,13 +110,12 @@ function setTimestampNow() {
     timestampText.textContent = "";
     return;
   }
-  var now = new Date().toISOString();
-  timestampText.textContent = "Rolled at: " + now;
+  timestampText.textContent = "Rolled at: " + new Date().toISOString();
 }
 
 function setControlsDisabled(disabled) {
   rollButton.disabled = disabled;
-  diceEl.disabled = disabled;
+  diceTouch.disabled = disabled;
 }
 
 function playBeep(freq, duration) {
@@ -96,6 +138,30 @@ function playBeep(freq, duration) {
   osc.stop(now + duration);
 }
 
+function finishRoll(finalValue) {
+  rolling = false;
+  cubeEl.classList.remove("rolling");
+  setFace(finalValue);
+  cubeEl.classList.add("settle-flash");
+  setTimeout(function () {
+    cubeEl.classList.remove("settle-flash");
+  }, 360);
+
+  setResult(finalValue);
+  setTimestampNow();
+  setAnswer(String(finalValue));
+  playBeep(430, 0.08);
+
+  if (!config.allowReroll) {
+    locked = true;
+    rollButton.textContent = "Result Locked";
+    setControlsDisabled(true);
+  } else {
+    rollButton.textContent = "Re-roll Dice";
+    setControlsDisabled(false);
+  }
+}
+
 function startRoll() {
   if (fieldProperties.READONLY) return;
   if (rolling) return;
@@ -104,36 +170,16 @@ function startRoll() {
   rolling = true;
   setControlsDisabled(true);
   playBeep(260, 0.12);
-  diceEl.className = "dice-face rolling face-" + randomFace();
+  cubeEl.classList.add("rolling");
 
   previewTimer = setInterval(function () {
     setFace(randomFace());
-  }, 100);
+  }, 110);
 
   rollTimer = setTimeout(function () {
     clearInterval(previewTimer);
     previewTimer = null;
-    var finalValue = randomFace();
-    setFace(finalValue);
-    diceEl.classList.remove("rolling");
-    diceEl.classList.add("settle-flash");
-    setTimeout(function () {
-      diceEl.classList.remove("settle-flash");
-    }, 320);
-    setResult(finalValue);
-    setTimestampNow();
-    setAnswer(String(finalValue));
-    playBeep(430, 0.08);
-    rolling = false;
-
-    if (!config.allowReroll) {
-      locked = true;
-      rollButton.textContent = "Result Locked";
-      setControlsDisabled(true);
-    } else {
-      rollButton.textContent = "Re-roll Dice";
-      setControlsDisabled(false);
-    }
+    finishRoll(randomFace());
   }, config.animationDurationMs);
 }
 
@@ -180,14 +226,8 @@ function initializeUI() {
     setControlsDisabled(true);
   }
 
-  rollButton.onclick = function () {
-    startRoll();
-  };
-
-  diceEl.onclick = function () {
-    startRoll();
-  };
-
+  rollButton.onclick = startRoll;
+  diceTouch.onclick = startRoll;
   soundButton.onclick = function () {
     soundEnabled = !soundEnabled;
     updateSoundLabel();
@@ -203,6 +243,8 @@ function clearAnswer() {
   previewTimer = null;
   rolling = false;
   locked = false;
+  cubeEl.classList.remove("rolling");
+  cubeEl.classList.remove("settle-flash");
   setAnswer("");
   setFace(1);
   resultText.textContent = "Result: -";

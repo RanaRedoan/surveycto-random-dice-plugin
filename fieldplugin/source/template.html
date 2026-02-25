@@ -3,16 +3,14 @@
   <div class="dice-hint default-hint-text-size" dir="auto">{{{HINT}}}</div>
 
   <div class="dice-stage">
-    <button id="dice-touch-target" class="dice-face face-1" type="button" aria-label="Dice. Tap to roll.">
-      <span class="pip p1"></span>
-      <span class="pip p2"></span>
-      <span class="pip p3"></span>
-      <span class="pip p4"></span>
-      <span class="pip p5"></span>
-      <span class="pip p6"></span>
-      <span class="pip p7"></span>
-      <span class="pip p8"></span>
-      <span class="pip p9"></span>
+    <button id="dice-touch-target" class="dice-touch-target" type="button" aria-label="Dice. Tap to roll.">
+      <div class="dice-cube-wrap">
+        <div id="dice-cube" class="dice-cube">
+          <div class="cube-face cube-front"></div>
+          <div class="cube-face cube-right"></div>
+          <div class="cube-face cube-top"></div>
+        </div>
+      </div>
     </button>
   </div>
 
