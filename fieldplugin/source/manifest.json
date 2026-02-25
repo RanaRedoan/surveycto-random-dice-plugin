@@ -1,0 +1,8 @@
+{
+  "name": "Dice Roller",
+  "author": "Rana Redoan",
+  "version": "1.0.0",
+  "supportedFieldTypes": ["integer"],
+  "hideDefaultRequiredMessage": false,
+  "hideDefaultConstraintMessage": false
+}
