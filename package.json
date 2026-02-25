@@ -1,0 +1,28 @@
+{
+  "name": "surveycto-dice-plugin",
+  "version": "1.0.0",
+  "description": "A SurveyCTO field plugin that animates a die roll and returns a trusted random value.",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "lint": "node scripts/lint.mjs",
+    "test": "node --test",
+    "build": "node scripts/build.mjs",
+    "check": "npm run lint && npm run test && npm run build"
+  },
+  "keywords": [
+    "surveycto",
+    "plugin",
+    "randomization",
+    "dice",
+    "field-surveys"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,141 @@
+:root {
+  --bg: #f2f4f5;
+  --surface: #ffffff;
+  --text: #111111;
+  --text-soft: #2f2f2f;
+  --primary: #0b5fff;
+  --success: #0a7a33;
+  --shadow: 0 14px 36px rgba(0, 0, 0, 0.13);
+}
+
+.dice-plugin-root {
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: radial-gradient(circle at 18% 20%, #ffffff, var(--bg));
+  color: var(--text);
+  font-family: "Noto Sans", "Segoe UI", sans-serif;
+}
+
+.dice-plugin {
+  width: min(1000px, 100%);
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 20px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.sound-btn,
+.roll-btn {
+  border: 0;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sound-btn {
+  padding: 12px 16px;
+  background: #e7edf7;
+  color: #09336f;
+  font-size: 1rem;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.die {
+  width: min(56vw, 340px);
+  aspect-ratio: 1;
+  max-width: 380px;
+  background: var(--surface);
+  border-radius: 36px;
+  box-shadow: var(--shadow);
+  border: 3px solid #e7e9ea;
+  padding: 22px;
+  box-sizing: border-box;
+  will-change: transform;
+}
+
+.dice-pips {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.pip {
+  width: 34%;
+  height: 34%;
+  margin: auto;
+  border-radius: 50%;
+  background: #111111;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.actions {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+}
+
+.roll-btn {
+  min-width: min(86vw, 360px);
+  min-height: 88px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: clamp(1.25rem, 2.9vw, 1.85rem);
+  letter-spacing: 0.01em;
+}
+
+.roll-btn:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.result {
+  color: var(--success);
+  font-weight: 900;
+  font-size: clamp(1.8rem, 5.4vw, 3rem);
+  letter-spacing: 0.01em;
+}
+
+.timestamp {
+  color: var(--text-soft);
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .dice-plugin {
+    padding: 14px;
+    gap: 14px;
+  }
+  .die {
+    width: min(76vw, 290px);
+    border-radius: 26px;
+    padding: 16px;
+  }
+}
