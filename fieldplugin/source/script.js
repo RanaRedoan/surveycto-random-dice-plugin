@@ -125,7 +125,41 @@ function setFace(frontValue) {
   renderDots(faceEls.left, layout.left);
   renderDots(faceEls.top, layout.top);
   renderDots(faceEls.bottom, layout.bottom);
-  cubeEl.style.transform = orientationForFront(frontValue);
+  return orientationForFront(frontValue);
+}
+
+function applyTransform(transformValue) {
+  cubeEl.style.transform = transformValue;
+}
+
+function animateSettle(targetTransform, onComplete) {
+  var settleDuration = Math.max(700, Math.round(config.animationDurationMs * 0.44));
+
+  if (typeof cubeEl.animate !== "function") {
+    applyTransform(targetTransform);
+    onComplete();
+    return;
+  }
+
+  var animation = cubeEl.animate(
+    [
+      { transform: targetTransform + " translateY(-14px) scale(1.07) rotateZ(8deg)", offset: 0 },
+      { transform: targetTransform + " translateY(11px) scale(0.94) rotateZ(-6deg)", offset: 0.34 },
+      { transform: targetTransform + " translateY(-6px) scale(1.03) rotateZ(3deg)", offset: 0.62 },
+      { transform: targetTransform + " translateY(3px) scale(0.99) rotateZ(-1deg)", offset: 0.82 },
+      { transform: targetTransform + " translateY(0px) scale(1) rotateZ(0deg)", offset: 1 }
+    ],
+    {
+      duration: settleDuration,
+      easing: "cubic-bezier(0.16, 0.84, 0.22, 1)",
+      fill: "forwards"
+    }
+  );
+
+  animation.onfinish = function () {
+    applyTransform(targetTransform);
+    onComplete();
+  };
 }
 
 function setResult(face) {
@@ -168,25 +202,23 @@ function playBeep(freq, duration) {
 function finishRoll(finalValue) {
   rolling = false;
   cubeEl.classList.remove("rolling");
-  setFace(finalValue);
-  cubeEl.classList.add("settle-flash");
-  setTimeout(function () {
-    cubeEl.classList.remove("settle-flash");
-  }, 360);
+  var targetTransform = setFace(finalValue);
 
   setResult(finalValue);
   setTimestampNow();
   setAnswer(String(finalValue));
-  playBeep(430, 0.08);
+  playBeep(430, 0.11);
 
-  if (!config.allowReroll) {
-    locked = true;
-    rollButton.textContent = "Result Locked";
-    setControlsDisabled(true);
-  } else {
-    rollButton.textContent = "Re-roll Dice";
-    setControlsDisabled(false);
-  }
+  animateSettle(targetTransform, function () {
+    if (!config.allowReroll) {
+      locked = true;
+      rollButton.textContent = "Result Locked";
+      setControlsDisabled(true);
+    } else {
+      rollButton.textContent = "Re-roll Dice";
+      setControlsDisabled(false);
+    }
+  });
 }
 
 function startRoll() {
@@ -200,8 +232,8 @@ function startRoll() {
   cubeEl.classList.add("rolling");
 
   previewTimer = setInterval(function () {
-    setFace(randomFace());
-  }, 120);
+    applyTransform(setFace(randomFace()));
+  }, 70);
 
   rollTimer = setTimeout(function () {
     clearInterval(previewTimer);
@@ -213,7 +245,7 @@ function startRoll() {
 function applyExistingAnswer() {
   var current = fieldProperties.CURRENT_ANSWER;
   if (current === undefined || current === null || current === "") {
-    setFace(1);
+    applyTransform(setFace(1));
     resultText.textContent = "Result: -";
     timestampText.textContent = "";
     locked = false;
@@ -222,14 +254,14 @@ function applyExistingAnswer() {
 
   var value = Number(current);
   if (!Number.isFinite(value) || value < 1 || value > 6) {
-    setFace(1);
+    applyTransform(setFace(1));
     resultText.textContent = "Result: -";
     timestampText.textContent = "";
     locked = false;
     return;
   }
 
-  setFace(Math.round(value));
+  applyTransform(setFace(Math.round(value)));
   setResult(Math.round(value));
   if (config.showTimestamp) {
     timestampText.textContent = "Saved value loaded";
@@ -271,9 +303,8 @@ function clearAnswer() {
   rolling = false;
   locked = false;
   cubeEl.classList.remove("rolling");
-  cubeEl.classList.remove("settle-flash");
   setAnswer("");
-  setFace(1);
+  applyTransform(setFace(1));
   resultText.textContent = "Result: -";
   timestampText.textContent = "";
   rollButton.textContent = "Roll Dice";

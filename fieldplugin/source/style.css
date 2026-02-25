@@ -56,25 +56,15 @@
 }
 
 .dice-cube.rolling {
-  animation: cube-roll 0.68s cubic-bezier(0.22, 0.75, 0.2, 1) infinite;
-}
-
-.dice-cube.settle-flash {
-  animation: settle-pop 360ms ease-out;
+  animation: cube-roll 0.36s cubic-bezier(0.28, 0.8, 0.24, 1) infinite;
 }
 
 @keyframes cube-roll {
   0% { transform: translate(-50%, -50%) rotateX(-20deg) rotateY(30deg) translateY(0px) scale(1); }
-  22% { transform: translate(-50%, -50%) rotateX(125deg) rotateY(140deg) translateY(-11px) scale(1.03); }
-  50% { transform: translate(-50%, -50%) rotateX(248deg) rotateY(312deg) translateY(8px) scale(0.98); }
-  76% { transform: translate(-50%, -50%) rotateX(342deg) rotateY(480deg) translateY(-5px) scale(1.02); }
-  100% { transform: translate(-50%, -50%) rotateX(435deg) rotateY(650deg) translateY(0px) scale(1); }
-}
-
-@keyframes settle-pop {
-  0% { transform: scale(0.92); filter: drop-shadow(0 0 0 rgba(255,56,43,0)); }
-  55% { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(255,56,43,0.22)); }
-  100% { transform: scale(1); filter: drop-shadow(0 12px 18px rgba(12, 32, 62, 0.22)); }
+  20% { transform: translate(-50%, -50%) rotateX(170deg) rotateY(210deg) translateY(-13px) scale(1.05); }
+  45% { transform: translate(-50%, -50%) rotateX(330deg) rotateY(460deg) translateY(9px) scale(0.96); }
+  70% { transform: translate(-50%, -50%) rotateX(510deg) rotateY(700deg) translateY(-6px) scale(1.03); }
+  100% { transform: translate(-50%, -50%) rotateX(700deg) rotateY(980deg) translateY(0px) scale(1); }
 }
 
 .cube-face {
