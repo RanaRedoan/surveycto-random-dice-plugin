@@ -62,6 +62,14 @@ npm run build
 
 4. Use `dist/` assets in your SurveyCTO plugin package/workflow.
 
+## Prebuilt upload ZIP
+
+If you want to use the plugin directly without building:
+
+- `releases/SurveyCTO_Dice_Plugin_Upload_v1.0.0.zip`
+
+You can download this file from the repository and upload it in SurveyCTO plugin settings.
+
 ## SurveyCTO integration pattern
 
 This repo uses a host adapter pattern so the plugin can bind to SurveyCTO APIs cleanly.  
