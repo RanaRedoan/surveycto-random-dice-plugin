@@ -32,83 +32,77 @@
 
 .dice-touch-target:disabled {
   cursor: not-allowed;
-  opacity: 0.78;
+  opacity: 0.75;
 }
 
 .dice-cube-wrap {
-  width: min(68vw, 260px);
-  height: min(68vw, 260px);
-  max-width: 280px;
-  max-height: 280px;
+  width: min(66vw, 240px);
+  height: min(66vw, 240px);
   min-width: 170px;
   min-height: 170px;
+  position: relative;
 }
 
 .dice-cube {
-  width: 100%;
-  height: 100%;
-  position: relative;
+  --size: 76%;
+  width: var(--size);
+  height: var(--size);
+  position: absolute;
+  left: 50%;
+  top: 50%;
   transform-style: preserve-3d;
-  transform: rotateX(-22deg) rotateY(25deg);
-  transition: transform 240ms ease;
+  transform: translate(-50%, -50%) rotateX(-20deg) rotateY(30deg);
+  transition: transform 260ms ease;
 }
 
 .dice-cube.rolling {
-  animation: cube-roll 620ms cubic-bezier(0.22, 0.75, 0.2, 1) infinite;
+  animation: cube-roll 0.68s cubic-bezier(0.22, 0.75, 0.2, 1) infinite;
 }
 
 .dice-cube.settle-flash {
-  animation: settle-pop 340ms ease-out;
+  animation: settle-pop 360ms ease-out;
 }
 
 @keyframes cube-roll {
-  0% { transform: rotateX(-22deg) rotateY(25deg) translateY(0px) scale(1); }
-  22% { transform: rotateX(135deg) rotateY(120deg) translateY(-10px) scale(1.03); }
-  50% { transform: rotateX(255deg) rotateY(280deg) translateY(8px) scale(0.98); }
-  76% { transform: rotateX(340deg) rotateY(450deg) translateY(-4px) scale(1.02); }
-  100% { transform: rotateX(430deg) rotateY(620deg) translateY(0px) scale(1); }
+  0% { transform: translate(-50%, -50%) rotateX(-20deg) rotateY(30deg) translateY(0px) scale(1); }
+  22% { transform: translate(-50%, -50%) rotateX(125deg) rotateY(140deg) translateY(-11px) scale(1.03); }
+  50% { transform: translate(-50%, -50%) rotateX(248deg) rotateY(312deg) translateY(8px) scale(0.98); }
+  76% { transform: translate(-50%, -50%) rotateX(342deg) rotateY(480deg) translateY(-5px) scale(1.02); }
+  100% { transform: translate(-50%, -50%) rotateX(435deg) rotateY(650deg) translateY(0px) scale(1); }
 }
 
 @keyframes settle-pop {
-  0% { transform: scale(0.93); filter: drop-shadow(0 0 0 rgba(255,56,43,0)); }
-  55% { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(255,56,43,0.26)); }
-  100% { transform: scale(1); filter: drop-shadow(0 8px 22px rgba(12, 32, 62, 0.2)); }
+  0% { transform: scale(0.92); filter: drop-shadow(0 0 0 rgba(255,56,43,0)); }
+  55% { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(255,56,43,0.22)); }
+  100% { transform: scale(1); filter: drop-shadow(0 12px 18px rgba(12, 32, 62, 0.22)); }
 }
 
 .cube-face {
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 22px;
-  background: linear-gradient(160deg, #ff665e 0%, #f53a33 54%, #cf1d17 100%);
-  border: 2px solid rgba(126, 10, 8, 0.6);
+  border-radius: 18%;
+  background: linear-gradient(160deg, #ff6b63 0%, #f43b33 55%, #cb1e18 100%);
+  border: 2px solid rgba(120, 11, 9, 0.62);
   box-shadow:
-    inset 0 10px 18px rgba(255, 255, 255, 0.3),
-    inset -10px -12px 18px rgba(112, 14, 8, 0.28),
-    0 12px 26px rgba(59, 7, 5, 0.25);
+    inset 0 10px 18px rgba(255, 255, 255, 0.28),
+    inset -10px -12px 20px rgba(110, 12, 8, 0.24);
 }
 
-.cube-front {
-  transform: translateZ(34px);
-}
-
-.cube-right {
-  transform: rotateY(90deg) translateZ(34px);
-  filter: brightness(0.92);
-}
-
-.cube-top {
-  transform: rotateX(90deg) translateZ(34px);
-  filter: brightness(1.06);
-}
+.cube-front  { transform: translateZ(calc(var(--size) * 0.5)); }
+.cube-back   { transform: rotateY(180deg) translateZ(calc(var(--size) * 0.5)); filter: brightness(0.9); }
+.cube-right  { transform: rotateY(90deg) translateZ(calc(var(--size) * 0.5)); filter: brightness(0.88); }
+.cube-left   { transform: rotateY(-90deg) translateZ(calc(var(--size) * 0.5)); filter: brightness(0.95); }
+.cube-top    { transform: rotateX(90deg) translateZ(calc(var(--size) * 0.5)); filter: brightness(1.04); }
+.cube-bottom { transform: rotateX(-90deg) translateZ(calc(var(--size) * 0.5)); filter: brightness(0.84); }
 
 .dot {
   width: 13%;
   height: 13%;
   border-radius: 999px;
-  background: radial-gradient(circle at 35% 35%, #fff 0%, #fff 40%, #f3f3f3 100%);
+  background: radial-gradient(circle at 35% 35%, #fff 0%, #fff 42%, #efefef 100%);
   position: absolute;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
 }
 
 .d-tl { left: 14%; top: 14%; }

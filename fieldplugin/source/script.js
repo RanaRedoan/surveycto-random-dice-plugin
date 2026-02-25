@@ -2,9 +2,14 @@
 
 var diceTouch = document.getElementById("dice-touch-target");
 var cubeEl = document.getElementById("dice-cube");
-var frontFaceEl = document.querySelector(".cube-front");
-var rightFaceEl = document.querySelector(".cube-right");
-var topFaceEl = document.querySelector(".cube-top");
+var faceEls = {
+  front: document.querySelector(".cube-front"),
+  back: document.querySelector(".cube-back"),
+  right: document.querySelector(".cube-right"),
+  left: document.querySelector(".cube-left"),
+  top: document.querySelector(".cube-top"),
+  bottom: document.querySelector(".cube-bottom")
+};
 var rollButton = document.getElementById("roll-button");
 var soundButton = document.getElementById("sound-button");
 var resultText = document.getElementById("result-text");
@@ -53,15 +58,6 @@ var DOT_MAP = {
   6: ["d-tl", "d-tr", "d-ml", "d-mr", "d-bl", "d-br"]
 };
 
-var ORIENTATION = {
-  1: "rotateX(-18deg) rotateY(20deg)",
-  2: "rotateX(-24deg) rotateY(112deg)",
-  3: "rotateX(-20deg) rotateY(200deg)",
-  4: "rotateX(-20deg) rotateY(292deg)",
-  5: "rotateX(68deg) rotateY(22deg)",
-  6: "rotateX(-92deg) rotateY(18deg)"
-};
-
 function updateSoundLabel() {
   soundButton.textContent = soundEnabled ? "Sound: On" : "Sound: Off";
 }
@@ -85,20 +81,51 @@ function renderDots(faceEl, value) {
   }
 }
 
-function uniqueFaces(seedFace) {
-  var top = randomFace();
-  var right = randomFace();
-  if (top === seedFace) top = (top % 6) + 1;
-  if (right === seedFace || right === top) right = ((right + 1) % 6) + 1;
-  return { front: seedFace, top: top, right: right };
+function randomDistinctFace(excludeA, excludeB) {
+  var val = randomFace();
+  while (val === excludeA || val === excludeB) {
+    val = randomFace();
+  }
+  return val;
 }
 
-function setFace(face) {
-  var faces = uniqueFaces(face);
-  renderDots(frontFaceEl, faces.front);
-  renderDots(topFaceEl, faces.top);
-  renderDots(rightFaceEl, faces.right);
-  cubeEl.style.transform = ORIENTATION[face] || ORIENTATION[1];
+function getCubeLayout(front) {
+  var top = randomDistinctFace(front, 7 - front);
+  var right = randomDistinctFace(front, 7 - front);
+  if (right === top || right === (7 - top)) {
+    right = randomDistinctFace(front, top);
+  }
+  return {
+    front: front,
+    back: 7 - front,
+    right: right,
+    left: 7 - right,
+    top: top,
+    bottom: 7 - top
+  };
+}
+
+function orientationForFront(front) {
+  var map = {
+    1: "translate(-50%, -50%) rotateX(-16deg) rotateY(22deg)",
+    2: "translate(-50%, -50%) rotateX(-18deg) rotateY(112deg)",
+    3: "translate(-50%, -50%) rotateX(-18deg) rotateY(202deg)",
+    4: "translate(-50%, -50%) rotateX(-18deg) rotateY(292deg)",
+    5: "translate(-50%, -50%) rotateX(76deg) rotateY(22deg)",
+    6: "translate(-50%, -50%) rotateX(-104deg) rotateY(22deg)"
+  };
+  return map[front] || map[1];
+}
+
+function setFace(frontValue) {
+  var layout = getCubeLayout(frontValue);
+  renderDots(faceEls.front, layout.front);
+  renderDots(faceEls.back, layout.back);
+  renderDots(faceEls.right, layout.right);
+  renderDots(faceEls.left, layout.left);
+  renderDots(faceEls.top, layout.top);
+  renderDots(faceEls.bottom, layout.bottom);
+  cubeEl.style.transform = orientationForFront(frontValue);
 }
 
 function setResult(face) {
@@ -174,7 +201,7 @@ function startRoll() {
 
   previewTimer = setInterval(function () {
     setFace(randomFace());
-  }, 110);
+  }, 120);
 
   rollTimer = setTimeout(function () {
     clearInterval(previewTimer);
