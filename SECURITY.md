@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-Please open a private security report through your internal process or contact the maintainers directly.
+Please report a vulnerability privately by email to redoanhossain630@gmail.com rather than in a public issue.
 
 Include:
 
